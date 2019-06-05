@@ -9,26 +9,8 @@ class Order:
     shipped = False
     customer = None
 
-    @staticmethod
-    def test_expedited(order):
-        return order.expedited
-
-    @staticmethod
-    def test_not_expedited(order):
-        return not order.expedited
-
-    @staticmethod
-    def get_customer_name(order):
-        return order.customer.name
-
-    @staticmethod
-    def get_customer_address(order):
-        return order.customer.address
-
-    @staticmethod
-    def get_shipping_address(order):
-        return order.shipping_address       
-
+    # Added solution to assignment
+    # Implemented lambdas and removed helper functions using predicate function!
     @staticmethod
     def get_filtered_info(predicate, func):
         output = []
@@ -40,39 +22,39 @@ class Order:
     @staticmethod
     def get_expedited_orders_customer_names():
         return Order.get_filtered_info(
-            Order.test_expedited,
-            Order.get_customer_name
+            lambda order: order.expedited,
+            lambda order: order.customer.name
         )
 
     @staticmethod
     def get_expedited_orders_customer_addresses():
         return Order.get_filtered_info(
-            Order.test_expedited,
-            Order.get_customer_address
+            lambda order: order.expedited,
+            lambda order: order.customer.address
         )
 
     @staticmethod
     def get_expedited_orders_shipping_addresses():
         return Order.get_filtered_info(
-            Order.test_expedited,
-            Order.get_shipping_address)        
+            lambda order: order.expedited,
+            lambda order: order.shipping_address)
 
     @staticmethod
     def get_not_expedited_orders_customer_names():
         return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_customer_name
+            lambda order: not order.expedited,
+            lambda order: order.customer.name
         )
 
     @staticmethod
     def get_not_expedited_orders_customer_addresses():
         return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_customer_address
+            lambda order: not order.expedited,
+            lambda order: order.customer.address
         )
 
     @staticmethod
     def get_not_expedited_orders_shipping_addresses():
         return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_shipping_address) 
+            lambda order: not order.expedited,
+            lambda order: order.shipping_address)

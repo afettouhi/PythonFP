@@ -75,4 +75,4 @@ class Order:
     def get_not_expedited_orders_shipping_addresses():
         return Order.get_filtered_info(
             Order.test_not_expedited,
-            Order.get_shipping_address) 
+            Order.get_shipping_address)

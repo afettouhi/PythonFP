@@ -55,4 +55,4 @@ class Order:
     def get_not_expedited_orders_shipping_addresses():
         return Order.get_filtered_info(
             lambda order: not order.expedited,
-            lambda order: order.shipping_address) 
+            lambda order: order.shipping_address)
