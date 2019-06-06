@@ -115,10 +115,12 @@ class Order(Immutable):
     def get_shipping_address(order):
         return order.shipping_address
 
+    # Changed from returning a list to returning a tuple instead.
     @staticmethod
     def filter(predicate, it):
         return tuple(filter(predicate, it))
 
+    # Changed from returning a list to returning a tuple instead.
     @staticmethod
     def map(func, it):
         return tuple(map(func, it))
@@ -128,6 +130,7 @@ class Order(Immutable):
     # def get_filtered_info(predicate, func, orders):
     #     return Order.map(func, Order.filter(predicate, orders))
 
+    # Use newly created get_filtered_tuple.
     @staticmethod
     def get_expedited_orders_customer_names(orders):
         return get_filtered_tuple(orders,
