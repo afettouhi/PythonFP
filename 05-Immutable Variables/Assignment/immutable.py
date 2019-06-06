@@ -1,5 +1,6 @@
 import abc
 
+
 class Immutable(metaclass=abc.ABCMeta):
     __slots__ = ('__attrs__',)
 
@@ -23,6 +24,7 @@ class Immutable(metaclass=abc.ABCMeta):
             raise AttributeError('Attempt to delete immutable attribute "%s".' % name)
         else:
             raise AttributeError(name)
+
 
 class A(Immutable):
     def __init__(self, val):

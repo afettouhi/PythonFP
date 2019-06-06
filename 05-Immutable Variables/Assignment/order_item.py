@@ -1,5 +1,6 @@
 from immutable import Immutable
 
+
 class OrderItem(Immutable):
     __slots__ = ('name', 'itemnumber', 'quantity', 'price', 'backordered')
 

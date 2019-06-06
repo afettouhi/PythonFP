@@ -1,5 +1,6 @@
 from immutable import Immutable
 
+
 class Customer(Immutable):
     __slots__ = ('name', 'address', 'enterprise')
 

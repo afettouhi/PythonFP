@@ -1,4 +1,6 @@
 from immutable import Immutable
+from order_item import OrderItem
+
 
 def get_updated_tuple(it, predicate, func):
     return tuple(
@@ -6,9 +8,16 @@ def get_updated_tuple(it, predicate, func):
         for i in it
     )
 
+
+def get_filtered_tuple(it, predicate, func):
+    return tuple(
+        func(i) for i in it if predicate(i)
+    )
+
+
 class Order(Immutable):
-    __slots__ = ('orderid', 'shipping_address','expedited', 
-                'shipped', 'customer', 'order_items')
+    __slots__ = ('orderid', 'shipping_address', 'expedited',
+                 'shipped', 'customer', 'order_items')
     # class attribute
     orders = ()
 
@@ -25,38 +34,38 @@ class Order(Immutable):
     def mark_backordered(orders, orderid, itemnumber):
         return Order.map(lambda o:
 
-            # copy all orders that do not match the orderid
-            o if o.orderid != orderid
-                
-            # otherwise build a new order with a new order item list
-            else (Order(o.orderid, o.shipping_address, o.expedited, o.shipped, o.customer,
-                        Order.map(lambda i:
-                            # copy the items that don't match
-                            item if i.itemnumber != itemnumber
-    
-                            # otherwise build a new order item setting backordered to True
-                            else OrderItem(i.name, i.itemnumber, i.quantity, i.price, True),
-    
-                            # iterate over all order items
-                            o.order_items)
-                        )),
-                # iterate over all orders
-                orders
-            )
+                         # copy all orders that do not match the orderid
+                         o if o.orderid != orderid
+
+                         # otherwise build a new order with a new order item list
+                         else (Order(o.orderid, o.shipping_address, o.expedited, o.shipped, o.customer,
+                                     Order.map(lambda i:
+                                               # copy the items that don't match
+                                               item if i.itemnumber != itemnumber
+
+                                               # otherwise build a new order item setting backordered to True
+                                               else OrderItem(i.name, i.itemnumber, i.quantity, i.price, True),
+
+                                               # iterate over all order items
+                                               o.order_items)
+                                     )),
+                         # iterate over all orders
+                         orders
+                         )
 
     @staticmethod
     def mark_backordered(orders, orderid, itemnumber):
         return get_updated_tuple(
             orders,
             lambda o: o.orderid == orderid,
-            lambda o: 
-                Order(o.orderid, o.shipping_address, o.expedited, o.shipped, o.customer,
-                get_updated_tuple(
-                    o.order_items, 
-                    lambda i: i.itemnumber == itemnumber,
-                    lambda i: OrderItem(i.name, i.itemnumber, i.quantity, i.price, True)
-                )
-            )
+            lambda o:
+            Order(o.orderid, o.shipping_address, o.expedited, o.shipped, o.customer,
+                  get_updated_tuple(
+                      o.order_items,
+                      lambda i: i.itemnumber == itemnumber,
+                      lambda i: OrderItem(i.name, i.itemnumber, i.quantity, i.price, True)
+                  )
+                  )
         )
 
     @staticmethod
@@ -71,11 +80,11 @@ class Order(Immutable):
     def notify_backordered(orders, msg):
         # Functional, implicit iteration
         Order.map(lambda o: o.customer.notify(o.customer, msg),
-            Order.filter(lambda o: Order.filter(
-                    lambda i: i.backordered, o.order_items),
-                orders
-                )
-            )
+                  Order.filter(lambda o: Order.filter(
+                      lambda i: i.backordered, o.order_items),
+                               orders
+                               )
+                  )
 
     @staticmethod
     def notify_backordered(orders, msg):
@@ -85,7 +94,7 @@ class Order(Immutable):
             lambda o: o.customer.notify(o.customer, msg),
             orders
         )
-    
+
     @staticmethod
     def test_expedited(order):
         return order.expedited
@@ -104,56 +113,57 @@ class Order(Immutable):
 
     @staticmethod
     def get_shipping_address(order):
-        return order.shipping_address     
+        return order.shipping_address
 
     @staticmethod
     def filter(predicate, it):
-        return list(filter(predicate, it))
+        return tuple(filter(predicate, it))
 
     @staticmethod
     def map(func, it):
-        return list(map(func, it))  
+        return tuple(map(func, it))
+
+    # Moved outside of class and removed use of map function.
+    # @staticmethod
+    # def get_filtered_info(predicate, func, orders):
+    #     return Order.map(func, Order.filter(predicate, orders))
 
     @staticmethod
-    def get_filtered_info(predicate, func, orders):
-        return Order.map(func, Order.filter(predicate, orders))
-  
-    @staticmethod
-    def get_expedited_orders_customer_names():
-        return Order.get_filtered_info(
-            Order.test_expedited,
-            Order.get_customer_name
-        )
+    def get_expedited_orders_customer_names(orders):
+        return get_filtered_tuple(orders,
+                                  Order.test_expedited,
+                                  Order.get_customer_name
+                                  )
 
     @staticmethod
-    def get_expedited_orders_customer_addresses():
-        return Order.get_filtered_info(
-            Order.test_expedited,
-            Order.get_customer_address
-        )
+    def get_expedited_orders_customer_addresses(orders):
+        get_filtered_tuple(orders,
+                           Order.test_expedited,
+                           Order.get_customer_address
+                           )
 
     @staticmethod
-    def get_expedited_orders_shipping_addresses():
-        return Order.get_filtered_info(
-            Order.test_expedited,
-            Order.get_shipping_address)        
+    def get_expedited_orders_shipping_addresses(orders):
+        get_filtered_tuple(orders,
+                           Order.test_expedited,
+                           Order.get_shipping_address)
 
     @staticmethod
-    def get_not_expedited_orders_customer_names():
-        return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_customer_name
-        )
+    def get_not_expedited_orders_customer_names(orders):
+        get_filtered_tuple(orders,
+                           Order.test_not_expedited,
+                           Order.get_customer_name
+                           )
 
     @staticmethod
-    def get_not_expedited_orders_customer_addresses():
-        return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_customer_address
-        )
+    def get_not_expedited_orders_customer_addresses(orders):
+        get_filtered_tuple(orders,
+                           Order.test_not_expedited,
+                           Order.get_customer_address
+                           )
 
     @staticmethod
-    def get_not_expedited_orders_shipping_addresses():
-        return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_shipping_address) 
+    def get_not_expedited_orders_shipping_addresses(orders):
+        get_filtered_tuple(orders,
+                           Order.test_not_expedited,
+                           Order.get_shipping_address)
