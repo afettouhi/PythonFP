@@ -140,33 +140,33 @@ class Order(Immutable):
 
     @staticmethod
     def get_expedited_orders_customer_addresses(orders):
-        get_filtered_tuple(orders,
-                           Order.test_expedited,
-                           Order.get_customer_address
-                           )
+        return get_filtered_tuple(orders,
+                                  Order.test_expedited,
+                                  Order.get_customer_address
+                                  )
 
     @staticmethod
     def get_expedited_orders_shipping_addresses(orders):
-        get_filtered_tuple(orders,
-                           Order.test_expedited,
-                           Order.get_shipping_address)
+        return get_filtered_tuple(orders,
+                                  Order.test_expedited,
+                                  Order.get_shipping_address)
 
     @staticmethod
     def get_not_expedited_orders_customer_names(orders):
-        get_filtered_tuple(orders,
-                           Order.test_not_expedited,
-                           Order.get_customer_name
-                           )
+        return get_filtered_tuple(orders,
+                                  Order.test_not_expedited,
+                                  Order.get_customer_name
+                                  )
 
     @staticmethod
     def get_not_expedited_orders_customer_addresses(orders):
-        get_filtered_tuple(orders,
-                           Order.test_not_expedited,
-                           Order.get_customer_address
-                           )
+        return get_filtered_tuple(orders,
+                                  Order.test_not_expedited,
+                                  Order.get_customer_address
+                                  )
 
     @staticmethod
     def get_not_expedited_orders_shipping_addresses(orders):
-        get_filtered_tuple(orders,
-                           Order.test_not_expedited,
-                           Order.get_shipping_address)
+        return get_filtered_tuple(orders,
+                                  Order.test_not_expedited,
+                                  Order.get_shipping_address)
