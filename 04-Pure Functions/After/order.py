@@ -30,7 +30,7 @@ class Order:
         return order.shipping_address
 
     @staticmethod
-    def filter(predicate,it):
+    def filter(predicate, it):
         return list(filter(predicate, it))
 
     @staticmethod

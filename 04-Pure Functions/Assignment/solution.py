@@ -1,6 +1,7 @@
 import collections
 import functools
 
+
 def consume(iterator, n=None):
     "Advance the iterator n-steps ahead. If n is none, consume entirely."
     # Use functions that consume iterators at C speed.
@@ -10,6 +11,7 @@ def consume(iterator, n=None):
     else:
         # advance to the empty slice starting at position n
         next(islice(iterator, n, n), None)
+
 
 class Order:
     # class attribute
@@ -43,7 +45,7 @@ class Order:
         return order.shipping_address
 
     @staticmethod
-    def filter(predicate,it):
+    def filter(predicate, it):
         return list(filter(predicate, it))
 
     @staticmethod
@@ -81,8 +83,8 @@ class Order:
 
     @staticmethod
     def set_order_expedited_map(orderid, orders):
-        consume(Order.map(Order.set_expedited, 
-            Order.filter(lambda x: x.orderid == orderid, orders)))
+        consume(Order.map(Order.set_expedited,
+                          Order.filter(lambda x: x.orderid == orderid, orders)))
 
     @staticmethod
     def get_expedited_orders_customer_names(orders):
@@ -106,7 +108,7 @@ class Order:
             Order.test_expedited,
             Order.get_shipping_address,
             orders
-        )        
+        )
 
     @staticmethod
     def get_not_expedited_orders_customer_names(orders):
@@ -130,4 +132,4 @@ class Order:
             Order.test_not_expedited,
             Order.get_shipping_address,
             orders
-        ) 
+        )

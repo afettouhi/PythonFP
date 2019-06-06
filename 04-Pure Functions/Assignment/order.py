@@ -1,3 +1,18 @@
+import collections
+import functools
+
+
+def consume(iterator, n=None):
+    "Advance the iterator n-steps ahead. If n is none, consume entirely."
+    # Use functions that consume iterators at C speed.
+    if n is None:
+        # feed the entire iterator into a zero-length deque
+        collections.deque(iterator, maxlen=0)
+    else:
+        # advance to the empty slice starting at position n
+        next(islice(iterator, n, n), None)
+
+
 class Order:
     # class attribute
     orders = []
@@ -27,52 +42,85 @@ class Order:
 
     @staticmethod
     def get_shipping_address(order):
-        return order.shipping_address       
+        return order.shipping_address
+
+    # Adding filter and map functions that return lists.
+    @staticmethod
+    def filter(predicate, it):
+        return list(filter(predicate, it))
 
     @staticmethod
-    def get_filtered_info(predicate, func):
-        output = []
-        for order in Order.orders:
-            if predicate(order):
-                output.append(func(order))
-        return output
-  
+    def map(func, it):
+        return list(map(func, it))
+
+    # version of get_filtered_info
     @staticmethod
-    def get_expedited_orders_customer_names():
+    def get_filtered_info(predicate, func, orders):
+        return Order.map(func, Order.filter(predicate, orders))
+
+    # Using newly created filter function from above.
+    @staticmethod
+    def get_order_by_id(orderid, orders):
+        return list(Order.filter(lambda order: order.orderid == orderid, orders))
+
+    @staticmethod
+    def set_order_expedited(orderid, orders):
+        for order in Order.get_order_by_id(orderid, orders):
+            order.expedited = True
+
+    @staticmethod
+    def set_expedited(order):
+        order.expedited = True
+
+    @staticmethod
+    def set_order_expedited_map(orderid, orders):
+        consume(Order.map(Order.set_expedited,
+                          Order.filter(lambda x: x.orderid == orderid, orders)))
+
+    @staticmethod
+    def get_expedited_orders_customer_names(orders):
         return Order.get_filtered_info(
             Order.test_expedited,
-            Order.get_customer_name
+            Order.get_customer_name,
+            orders
         )
 
     @staticmethod
-    def get_expedited_orders_customer_addresses():
+    def get_expedited_orders_customer_addresses(orders):
         return Order.get_filtered_info(
             Order.test_expedited,
-            Order.get_customer_address
+            Order.get_customer_address,
+            orders
         )
 
     @staticmethod
-    def get_expedited_orders_shipping_addresses():
+    def get_expedited_orders_shipping_addresses(orders):
         return Order.get_filtered_info(
             Order.test_expedited,
-            Order.get_shipping_address)        
-
-    @staticmethod
-    def get_not_expedited_orders_customer_names():
-        return Order.get_filtered_info(
-            Order.test_not_expedited,
-            Order.get_customer_name
+            Order.get_shipping_address,
+            orders
         )
 
     @staticmethod
-    def get_not_expedited_orders_customer_addresses():
+    def get_not_expedited_orders_customer_names(orders):
         return Order.get_filtered_info(
             Order.test_not_expedited,
-            Order.get_customer_address
+            Order.get_customer_name,
+            orders
         )
 
     @staticmethod
-    def get_not_expedited_orders_shipping_addresses():
+    def get_not_expedited_orders_customer_addresses(orders):
         return Order.get_filtered_info(
             Order.test_not_expedited,
-            Order.get_shipping_address) 
+            Order.get_customer_address,
+            orders
+        )
+
+    @staticmethod
+    def get_not_expedited_orders_shipping_addresses(orders):
+        return Order.get_filtered_info(
+            Order.test_not_expedited,
+            Order.get_shipping_address,
+            orders
+        )
